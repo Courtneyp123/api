@@ -183,6 +183,16 @@ public class BuildServiceImpl implements BuildService {
         return response;
     }
 
+    @Override
+    public List<Build> getBuildsByCollectorItemId(ObjectId collectorItemId) {
+        List<Build> buildsByCollectorItemId = null;
+        if ((collectorItemId != null)) {
+            buildsByCollectorItemId = buildRepository.findBuildsByCollectorItemId(collectorItemId);
+        }
+        return buildsByCollectorItemId;
+
+    }
+
     private void populateDashboardId(BuildDataCreateResponse response) {
         if (response == null) return;
 

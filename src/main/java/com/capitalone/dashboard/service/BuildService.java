@@ -6,6 +6,9 @@ import com.capitalone.dashboard.response.BuildDataCreateResponse;
 import com.capitalone.dashboard.model.DataResponse;
 import com.capitalone.dashboard.request.BuildDataCreateRequest;
 import com.capitalone.dashboard.request.BuildSearchRequest;
+import org.bson.types.ObjectId;
+
+import java.util.List;
 
 public interface BuildService {
 
@@ -16,6 +19,13 @@ public interface BuildService {
      * @return builds matching criteria
      */
     DataResponse<Iterable<Build>> search(BuildSearchRequest request);
+
+    /**
+     * Get list of latest builds by the collector item id.
+     *
+     * @param collectorItemId collector item id to search by
+     */
+    List<Build> getBuildsByCollectorItemId(ObjectId collectorItemId);
 
     String create(BuildDataCreateRequest request) throws HygieiaException;
     String createV2(BuildDataCreateRequest request) throws HygieiaException;

@@ -224,15 +224,6 @@ public class BuildServiceTest {
     }
 
     @Test
-    public void checkDashboardsByBusServiceName() {
-        List<Dashboard> dashboards = Collections.singletonList(new Dashboard("team", "title", null, null, DashboardType.Team, "configItemAppName", "configItemComponentName", null, false, ScoreDisplayType.HEADER));
-
-        when(dashboardService.getDashboardsByBusServiceName("configItemAppName")).thenReturn(dashboards);
-        List<Dashboard> tester = dashboardService.getDashboardsByBusServiceName("configItemAppName");
-        assertEquals(tester.size(), 1);
-    }
-
-    @Test
     public void createV3WithGoodRequestLibraryThresholdExceed() throws HygieiaException {
         ObjectId collectorId = ObjectId.get();
         BuildDataCreateRequest request = makeBuildRequest();
@@ -278,6 +269,42 @@ public class BuildServiceTest {
         BuildDataCreateResponse response = buildService.createV3(request);
         assertEquals(build.getStartedBy(), response.getStartedBy());
         assertEquals(build.getNumber(), response.getNumber());
+    }
+
+    @Test
+    public void getBuildsByCollectorItemId_InitialBuild() {
+        Build firstBuild = makeBuild();
+        ObjectId buildCollectorItemId = firstBuild.getCollectorItemId();
+
+        buildRepository.save(firstBuild);
+        when(buildService.getBuildsByCollectorItemId(buildCollectorItemId)).thenReturn(Arrays.asList(makeBuild()));
+        List<Build> listOfBuildsByCollectorItemId = buildService.getBuildsByCollectorItemId(buildCollectorItemId);
+        assertEquals(listOfBuildsByCollectorItemId.size(), 1);
+    }
+
+    @Test
+    public void getBuildsByCollectorItemId_Multiple() {
+        Build firstBuild = makeBuild();
+        ObjectId buildCollectorItemId = firstBuild.getCollectorItemId();
+        buildRepository.save(firstBuild);
+
+        Build secondBuild = makeBuild();
+        secondBuild.setCollectorItemId(buildCollectorItemId);
+        secondBuild.setBuildUrl("buildUrl_2");
+        secondBuild.setNumber("2");
+        buildRepository.save(secondBuild);
+
+        // Items in build list have the same collectorItemId
+        List<Build> buildListWithSameCollectorItemId = Arrays.asList(firstBuild, secondBuild);
+
+        Build thirdBuild = makeBuild();
+        thirdBuild.setBuildUrl("buildUrl_3");
+        thirdBuild.setNumber("3");
+        buildRepository.save(thirdBuild);
+
+        when(buildService.getBuildsByCollectorItemId(buildCollectorItemId)).thenReturn(buildListWithSameCollectorItemId);
+        List<Build> listOfBuildsByCollectorItemId = buildService.getBuildsByCollectorItemId(buildCollectorItemId);
+        assertEquals(listOfBuildsByCollectorItemId.size(), 2);
     }
 
     @Test
@@ -368,6 +395,21 @@ public class BuildServiceTest {
         Build build = new Build();
         build.setNumber("1");
         build.setBuildUrl("buildUrl");
+        build.setStartTime(3);
+        build.setEndTime(8);
+        build.setDuration(5);
+        build.setBuildStatus(BuildStatus.Success);
+        build.setStartedBy("foo");
+        build.setId(ObjectId.get());
+        build.setCollectorItemId(ObjectId.get());
+        build.getSourceChangeSet().add(makeScm());
+        return build;
+    }
+
+    private Build makeBuild_2() {
+        Build build = new Build();
+        build.setNumber("2");
+        build.setBuildUrl("buildUrl_2");
         build.setStartTime(3);
         build.setEndTime(8);
         build.setDuration(5);

@@ -876,8 +876,8 @@ public class DashboardServiceTest {
         List<Dashboard> dashboards = Collections.singletonList(new Dashboard("team", "title", null, null, DashboardType.Team, "configItemAppName", "configItemComponentName", null, false, ScoreDisplayType.HEADER));
 
         when(dashboardService.getDashboardsByBusServiceName("configItemAppName")).thenReturn(dashboards);
-        List<Dashboard> tester = dashboardService.getDashboardsByBusServiceName("configItemAppName");
-        assertEquals(tester.size(), 1);
+        List<Dashboard> dashboardsByBusService = dashboardService.getDashboardsByBusServiceName("configItemAppName");
+        assertEquals(dashboardsByBusService.size(), 1);
         assertNotNull(dashboardService.getDashboardsByBusServiceName("configItemAppName"));
     }
 
