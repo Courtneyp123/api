@@ -863,6 +863,19 @@ public class DashboardServiceImpl implements DashboardService {
     }
 
     /**
+     * Retrieves a list of Dashboards for an ASV/Business Service
+     *
+     * @param busServiceName - Business Service Name/ASV
+     */
+    public List<Dashboard> getDashboardsByBusServiceName(String busServiceName) {
+        List<Dashboard> dashboardsByServiceName = null;
+        if ((busServiceName != null) && (!busServiceName.isEmpty())) {
+            dashboardsByServiceName = dashboardRepository.findAllByBusServiceName(busServiceName);
+        }
+        return dashboardsByServiceName;
+    }
+
+    /**
      * Get count of all dashboards filtered by title
      *
      * @param title Title of Dashboard

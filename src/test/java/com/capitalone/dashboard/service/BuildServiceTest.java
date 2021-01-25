@@ -224,6 +224,15 @@ public class BuildServiceTest {
     }
 
     @Test
+    public void checkDashboardsByBusServiceName() {
+        List<Dashboard> dashboards = Collections.singletonList(new Dashboard("team", "title", null, null, DashboardType.Team, "configItemAppName", "configItemComponentName", null, false, ScoreDisplayType.HEADER));
+
+        when(dashboardService.getDashboardsByBusServiceName("configItemAppName")).thenReturn(dashboards);
+        List<Dashboard> tester = dashboardService.getDashboardsByBusServiceName("configItemAppName");
+        assertEquals(tester.size(), 1);
+    }
+
+    @Test
     public void createV3WithGoodRequestLibraryThresholdExceed() throws HygieiaException {
         ObjectId collectorId = ObjectId.get();
         BuildDataCreateRequest request = makeBuildRequest();

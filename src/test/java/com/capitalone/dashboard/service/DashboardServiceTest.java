@@ -872,6 +872,16 @@ public class DashboardServiceTest {
     }
 
     @Test
+    public void getDashboardsByBusServiceName() {
+        List<Dashboard> dashboards = Collections.singletonList(new Dashboard("team", "title", null, null, DashboardType.Team, "configItemAppName", "configItemComponentName", null, false, ScoreDisplayType.HEADER));
+
+        when(dashboardService.getDashboardsByBusServiceName("configItemAppName")).thenReturn(dashboards);
+        List<Dashboard> tester = dashboardService.getDashboardsByBusServiceName("configItemAppName");
+        assertEquals(tester.size(), 1);
+        assertNotNull(dashboardService.getDashboardsByBusServiceName("configItemAppName"));
+    }
+
+    @Test
     public void getAllDashboardsByTitleCount() throws HygieiaException{
         Dashboard myDashboard = makeTeamDashboard("template", "title", "appName", "amit",null, null, "comp1", "comp2");
         Page<Dashboard> pagedDashboards = new PageImpl<Dashboard>(Stream.of(myDashboard).collect(Collectors.toList()));

@@ -67,6 +67,13 @@ public interface DashboardService {
     List<Dashboard> getDashboardsByCollectorItems(Set<CollectorItem> collectorItems, CollectorType collectorType);
 
     /**
+     * Retrieves a list of Dashboards for an ASV/Business Service
+     *
+     * @param busServiceName - Business Service Name/ASV
+     */
+    List<Dashboard> getDashboardsByBusServiceName(String busServiceName);
+
+    /**
      * Associate a CollectorItem to a Component
      *
      * @param componentId unique identifier of the Component
@@ -244,7 +251,3 @@ public interface DashboardService {
 
     Iterable<Dashboard> allTemplate(String template);
 }
-
-
-
-
