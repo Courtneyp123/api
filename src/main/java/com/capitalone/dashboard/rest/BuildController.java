@@ -9,6 +9,7 @@ import com.capitalone.dashboard.model.DataResponse;
 import com.capitalone.dashboard.request.BuildDataCreateRequest;
 import com.capitalone.dashboard.request.BuildSearchRequest;
 import com.capitalone.dashboard.service.BuildService;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+
+import java.util.List;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
@@ -42,6 +45,13 @@ public class BuildController {
     @RequestMapping(value = "/build", method = GET, produces = APPLICATION_JSON_VALUE)
     public DataResponse<Iterable<Build>> builds(@Valid BuildSearchRequest request) {
         return buildService.search(request);
+    }
+
+    @RequestMapping(value = "/build/collectorItemId/{collectorItemId}", method = GET, produces = APPLICATION_JSON_VALUE)
+    public List<Build> getBuildsByCollectorItemId(@Valid ObjectId collectorItemId) {
+        List<Build> buildsListByCollectorItemId = buildService.getBuildsByCollectorItemId(collectorItemId);
+
+        return buildsListByCollectorItemId;
     }
 
     @RequestMapping(value = "/build", method = POST,
