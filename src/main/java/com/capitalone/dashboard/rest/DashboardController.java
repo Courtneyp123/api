@@ -260,10 +260,10 @@ public class DashboardController {
         }
     }
 
-    @RequestMapping(value = "/dashboard/busService/{busServiceName}", method = GET,
+    @RequestMapping(value = "/dashboard/configurationItemBusServName/{configurationItemBusServName}", method = GET,
             produces = APPLICATION_JSON_VALUE)
-    public List<Dashboard> getDashboardsByBusService(@PathVariable String busServiceName) {
-        List<Dashboard> dashboardsByBusService = dashboardService.getDashboardsByBusServiceName(busServiceName);
+    public List<Dashboard> getDashboardsByBusService(@PathVariable String configurationItemBusServName) {
+        List<Dashboard> dashboardsByBusService = dashboardService.getDashboardsByBusServiceName(configurationItemBusServName);
 
         return dashboardsByBusService;
     }

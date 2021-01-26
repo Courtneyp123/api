@@ -159,6 +159,38 @@ public class DashboardControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(objectId.toString())));
     }
+
+    @Test
+    public void getDashboardsByBusinessService_OneItem() throws Exception {
+        String configurationItemBusServName = "busService";
+        Dashboard d1 = makeDashboard("t1", "title", "app", "comp","amit", DashboardType.Team, configurationItemBusServName, configItemComponentName);
+
+        List<Dashboard> dashList = new ArrayList<>();
+        dashList.add(d1);
+
+        when(dashboardService.getDashboardsByBusServiceName(configurationItemBusServName)).thenReturn(dashList);
+        mockMvc.perform(get("/dashboard/configurationItemBusServName/" + configurationItemBusServName))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].configurationItemBusServName", is(configurationItemBusServName)));
+    }
+
+    @Test
+    public void getDashboardsByBusinessService_Multiple() throws Exception {
+        String configurationItemBusServName = "busService";
+        Dashboard d1 = makeDashboard("t1", "title", "app", "comp","amit", DashboardType.Team, configurationItemBusServName, configItemComponentName);
+        Dashboard d2 = makeDashboard("t2", "title2", "app2", "comp2","amit", DashboardType.Team, configurationItemBusServName, configItemComponentName);
+
+        List<Dashboard> dashList = new ArrayList<>();
+        dashList.add(d1);
+        dashList.add(d2);
+
+        when(dashboardService.getDashboardsByBusServiceName(configurationItemBusServName)).thenReturn(dashList);
+        mockMvc.perform(get("/dashboard/configurationItemBusServName/" + configurationItemBusServName))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].configurationItemBusServName", is(configurationItemBusServName)))
+                .andExpect(jsonPath("$[1].configurationItemBusServName", is(configurationItemBusServName)));
+    }
+
     @Test
     public void updateTeamDashboard() throws Exception {
         ObjectId objectId = new ObjectId("54b982620364c80a6136c9f2");
