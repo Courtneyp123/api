@@ -259,6 +259,11 @@ public class DashboardController {
                     .body(he.getMessage());
         }
     }
+    @RequestMapping(value = "/dashboard/busService/{busServiceName}", method = GET,
+            produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity getDashboardsByBusService(@PathVariable String busServiceName) {
+        return ResponseEntity.status(HttpStatus.OK).body(dashboardService.getDashboardsByBusServiceName(busServiceName));
+    }
     @RequestMapping(value = "/dashboard/configItemComponent/{configItem}", method = GET,
             produces = APPLICATION_JSON_VALUE)
     public ResponseEntity getDashboardByComp(@PathVariable String configItem) {
