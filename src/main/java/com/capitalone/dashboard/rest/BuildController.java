@@ -14,10 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -48,7 +45,7 @@ public class BuildController {
     }
 
     @RequestMapping(value = "/build/collectorItemId/{collectorItemId}", method = GET, produces = APPLICATION_JSON_VALUE)
-    public List<Build> getBuildsByCollectorItemId(@Valid ObjectId collectorItemId) {
+    public List<Build> getBuildsByCollectorItemId(@PathVariable ObjectId collectorItemId) {
         List<Build> buildsListByCollectorItemId = buildService.getBuildsByCollectorItemId(collectorItemId);
 
         return buildsListByCollectorItemId;

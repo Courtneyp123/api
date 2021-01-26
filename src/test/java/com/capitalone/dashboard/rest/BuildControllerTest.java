@@ -11,8 +11,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import org.bson.types.ObjectId;
 import org.junit.Before;
@@ -85,6 +87,21 @@ public class BuildControllerTest {
                 .andExpect(jsonPath("$.result[0].sourceChangeSet[0].scmCommitTimestamp", is(intVal(scm.getScmCommitTimestamp()))))
                 .andExpect(jsonPath("$.result[0].sourceChangeSet[0].scmCommitLog", is(scm.getScmCommitLog())))
                 .andExpect(jsonPath("$.result[0].sourceChangeSet[0].scmAuthor", is(scm.getScmAuthor())));
+    }
+
+    @Test
+    public void getBuildsByCollectorItemId() throws Exception {
+        List<Build> buildList = new ArrayList<>();
+
+        Build build1 = makeBuild();
+        ObjectId collectorItemId = build1.getCollectorItemId();
+        buildList.add(build1);
+
+        when(buildService.getBuildsByCollectorItemId(collectorItemId)).thenReturn(buildList);
+        mockMvc.perform(get("/build/collectorItemId/" + collectorItemId))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].collectorItemId", is(collectorItemId.toString())));
     }
 
     @Test
