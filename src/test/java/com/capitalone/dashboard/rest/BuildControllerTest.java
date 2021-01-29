@@ -93,8 +93,8 @@ public class BuildControllerTest {
         Iterable<Build> builds = Collections.singletonList(build);
         DataResponse<Iterable<Build>> response = new DataResponse<>(builds, 1);
 
-        when(buildService.searchTop10ByCollectorItemIdOrderByTimestampDesc(Mockito.any(BuildSearchRequest.class))).thenReturn(response);
-        mockMvc.perform(get("/build/10?componentId=" + ObjectId.get()))
+        when(buildService.searchBySpecifiedNumberOfBuilds(Mockito.any(BuildSearchRequest.class), Matchers.eq(5))).thenReturn(response);
+        mockMvc.perform(get("/build/" + 5 + "?componentId=" + ObjectId.get()))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.result", hasSize(1)))
@@ -113,8 +113,8 @@ public class BuildControllerTest {
         ((ArrayList<Build>) builds).add(build);
         DataResponse<Iterable<Build>> response = new DataResponse<>(builds, 1);
 
-        when(buildService.searchTop10ByCollectorItemIdOrderByTimestampDesc(Mockito.any(BuildSearchRequest.class))).thenReturn(response);
-        mockMvc.perform(get("/build/10?componentId=" + ObjectId.get()))
+        when(buildService.searchBySpecifiedNumberOfBuilds(Mockito.any(BuildSearchRequest.class), Matchers.eq(5))).thenReturn(response);
+        mockMvc.perform(get("/build/" + 5 + "?componentId=" + ObjectId.get()))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.result", hasSize(2)))

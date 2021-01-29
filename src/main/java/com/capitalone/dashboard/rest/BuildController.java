@@ -13,10 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -44,9 +41,9 @@ public class BuildController {
         return buildService.search(request);
     }
 
-    @RequestMapping(value = "/build/10", method = GET, produces = APPLICATION_JSON_VALUE)
-    public DataResponse<Iterable<Build>> buildsFiltered(@Valid BuildSearchRequest request) {
-        return buildService.searchTop10ByCollectorItemIdOrderByTimestampDesc(request);
+    @RequestMapping(value = "/build/{numOfBuildsToReturn}", method = GET, produces = APPLICATION_JSON_VALUE)
+    public DataResponse<Iterable<Build>> buildsFiltered(@Valid BuildSearchRequest request, @PathVariable int numOfBuildsToReturn) {
+        return buildService.searchBySpecifiedNumberOfBuilds(request, numOfBuildsToReturn);
     }
 
     @RequestMapping(value = "/build", method = POST,

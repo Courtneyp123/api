@@ -115,9 +115,9 @@ public class BuildServiceTest {
 
         when(componentRepository.findOne(request.getComponentId())).thenReturn(makeComponent(collectorItemId, collectorId, true));
         when(collectorRepository.findOne(collectorId)).thenReturn(new Collector());
-        when(buildRepository.findTop10ByCollectorItemIdOrderByTimestampDesc(collectorItemId)).thenReturn(mockBuildList);
+        when(buildRepository.findTopNumOfBuildsToReturnByCollectorItemIdOrderByTimestampDesc(collectorItemId, 10)).thenReturn(mockBuildList);
 
-        DataResponse<Iterable<Build>> response = buildService.searchTop10ByCollectorItemIdOrderByTimestampDesc(request);
+        DataResponse<Iterable<Build>> response = buildService.searchBySpecifiedNumberOfBuilds(request, 10);
         List<Build> result = (List<Build>) response.getResult();
         Assert.assertEquals(4, result.size());
     }

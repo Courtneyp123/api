@@ -21,5 +21,5 @@ public interface BuildService {
     String createV2(BuildDataCreateRequest request) throws HygieiaException;
     BuildDataCreateResponse createV3(BuildDataCreateRequest request) throws HygieiaException;
 
-    DataResponse<Iterable<Build>> searchTop10ByCollectorItemIdOrderByTimestampDesc(BuildSearchRequest request);
+    DataResponse<Iterable<Build>> searchBySpecifiedNumberOfBuilds(BuildSearchRequest request, int numOfBuildsToReturn);
 }

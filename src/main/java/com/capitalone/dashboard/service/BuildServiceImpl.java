@@ -125,7 +125,7 @@ public class BuildServiceImpl implements BuildService {
         return new DataResponse<>(result, collector.getLastExecuted());
     }
 
-    public DataResponse<Iterable<Build>> searchTop10ByCollectorItemIdOrderByTimestampDesc(BuildSearchRequest request) {
+    public DataResponse<Iterable<Build>> searchBySpecifiedNumberOfBuilds(BuildSearchRequest request, int numOfBuildsToReturn) {
         CollectorItem item;
         Component component = componentRepository.findOne(request.getComponentId());
         if ( (component == null)
@@ -140,7 +140,7 @@ public class BuildServiceImpl implements BuildService {
         Collector collector = collectorRepository.findOne(item.getCollectorId());
 
         ObjectId collectorItemId = new ObjectId(String.valueOf(item.getId()));
-        Iterable<Build> result = buildRepository.findTop10ByCollectorItemIdOrderByTimestampDesc(collectorItemId);;
+        Iterable<Build> result = buildRepository.findTopNumOfBuildsToReturnByCollectorItemIdOrderByTimestampDesc(collectorItemId, numOfBuildsToReturn);
         return new DataResponse<>(result, collector.getLastExecuted());
     }
 
