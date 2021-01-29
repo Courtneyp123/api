@@ -11,8 +11,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.util.Arrays;
-import java.util.Collections;
+import java.util.*;
 
 import org.bson.types.ObjectId;
 import org.junit.Before;
@@ -85,6 +84,72 @@ public class BuildControllerTest {
                 .andExpect(jsonPath("$.result[0].sourceChangeSet[0].scmCommitTimestamp", is(intVal(scm.getScmCommitTimestamp()))))
                 .andExpect(jsonPath("$.result[0].sourceChangeSet[0].scmCommitLog", is(scm.getScmCommitLog())))
                 .andExpect(jsonPath("$.result[0].sourceChangeSet[0].scmAuthor", is(scm.getScmAuthor())));
+    }
+
+    @Test
+    public void buildsFiltered() throws Exception {
+        Build build = makeBuild();
+        Iterable<Build> builds = Collections.singletonList(build);
+        DataResponse<Iterable<Build>> response = new DataResponse<>(builds, 1);
+
+        when(buildService.searchTop10ByCollectorItemIdOrderByTimestampDesc(Mockito.any(BuildSearchRequest.class))).thenReturn(response);
+        mockMvc.perform(get("/build/10?componentId=" + ObjectId.get()))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.result", hasSize(1)))
+                .andExpect(jsonPath("$.result[0].collectorItemId", is(build.getCollectorItemId().toString())))
+                .andExpect(jsonPath("$.result[0].timestamp", is(intVal(build.getTimestamp()))));
+    }
+
+    @Test
+    public void buildsFiltered_Multiple() throws Exception {
+        Build build = makeBuild();
+        Build build2 = makeBuild();
+        build2.setCollectorItemId(build.getCollectorItemId());
+        build2.setTimestamp(2);
+        Iterable<Build> builds = new ArrayList<>();
+        ((ArrayList<Build>) builds).add(build2);
+        ((ArrayList<Build>) builds).add(build);
+        DataResponse<Iterable<Build>> response = new DataResponse<>(builds, 1);
+
+        when(buildService.searchTop10ByCollectorItemIdOrderByTimestampDesc(Mockito.any(BuildSearchRequest.class))).thenReturn(response);
+        mockMvc.perform(get("/build/10?componentId=" + ObjectId.get()))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.result", hasSize(2)))
+                .andExpect(jsonPath("$.result[0].collectorItemId", is(build2.getCollectorItemId().toString())))
+                .andExpect(jsonPath("$.result[0].timestamp", is(intVal(build2.getTimestamp()))))
+                .andExpect(jsonPath("$.result[1].collectorItemId", is(build.getCollectorItemId().toString())))
+                .andExpect(jsonPath("$.result[1].timestamp", is(intVal(build.getTimestamp()))));
+    }
+
+    @Test
+    public void buildsSortByTimestamp() throws Exception {
+        Build build = makeBuild();
+        Build build2 = makeBuild();
+
+        build2.setTimestamp(2);
+
+        Collection<Build> listOfBuilds = new LinkedList<>();
+        listOfBuilds.add(build2);
+        listOfBuilds.add(build);
+        Iterable<Build> iterableBuilds = listOfBuilds;
+
+        DataResponse<Iterable<Build>> response = new DataResponse<>(iterableBuilds, 1);
+        SCM scm = build.getSourceChangeSet().get(0);
+
+        when(buildService.search(Mockito.any(BuildSearchRequest.class))).thenReturn(response);
+
+        mockMvc.perform(get("/build?componentId=" + ObjectId.get()))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.result", hasSize(2)))
+                .andExpect(jsonPath("$.result[0].id", is(build2.getId().toString())))
+                .andExpect(jsonPath("$.result[0].collectorItemId", is(build2.getCollectorItemId().toString())))
+                .andExpect(jsonPath("$.result[0].timestamp", is(intVal(build2.getTimestamp()))))
+                .andExpect(jsonPath("$.result[1].id", is(build.getId().toString())))
+                .andExpect(jsonPath("$.result[1].collectorItemId", is(build.getCollectorItemId().toString())))
+                .andExpect(jsonPath("$.result[1].timestamp", is(intVal(build.getTimestamp()))));
     }
 
     @Test

@@ -88,6 +88,41 @@ public class BuildServiceTest {
     }
 
     @Test
+    public void searchTop10ByCollectorItemIdOrderByTimestampDesc() {
+        ObjectId componentId = ObjectId.get();
+        ObjectId collectorItemId = ObjectId.get();
+        ObjectId collectorId = ObjectId.get();
+
+        BuildSearchRequest request = new BuildSearchRequest();
+        request.setComponentId(componentId);
+        Build build1 = new Build();
+        build1.setTimestamp(1);
+        build1.setCollectorItemId(collectorItemId);
+
+        Build build2 = new Build();
+        build2.setTimestamp(2);
+        build2.setCollectorItemId(collectorItemId);
+
+        Build build3 = new Build();
+        build3.setTimestamp(3);
+        build3.setCollectorItemId(collectorItemId);
+
+        Build build4 = new Build();
+        build4.setTimestamp(4);
+        build4.setCollectorItemId(collectorItemId);
+
+        List<Build> mockBuildList = Arrays.asList(build4, build3, build2, build1);
+
+        when(componentRepository.findOne(request.getComponentId())).thenReturn(makeComponent(collectorItemId, collectorId, true));
+        when(collectorRepository.findOne(collectorId)).thenReturn(new Collector());
+        when(buildRepository.findTop10ByCollectorItemIdOrderByTimestampDesc(collectorItemId)).thenReturn(mockBuildList);
+
+        DataResponse<Iterable<Build>> response = buildService.searchTop10ByCollectorItemIdOrderByTimestampDesc(request);
+        List<Build> result = (List<Build>) response.getResult();
+        Assert.assertEquals(4, result.size());
+    }
+
+    @Test
     public void search_Empty_Response_No_CollectorItems() {
         ObjectId componentId = ObjectId.get();
         ObjectId collectorItemId = ObjectId.get();

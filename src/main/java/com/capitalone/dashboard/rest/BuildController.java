@@ -44,6 +44,11 @@ public class BuildController {
         return buildService.search(request);
     }
 
+    @RequestMapping(value = "/build/10", method = GET, produces = APPLICATION_JSON_VALUE)
+    public DataResponse<Iterable<Build>> buildsFiltered(@Valid BuildSearchRequest request) {
+        return buildService.searchTop10ByCollectorItemIdOrderByTimestampDesc(request);
+    }
+
     @RequestMapping(value = "/build", method = POST,
             consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<String> createBuild(@Valid @RequestBody BuildDataCreateRequest request) throws HygieiaException {

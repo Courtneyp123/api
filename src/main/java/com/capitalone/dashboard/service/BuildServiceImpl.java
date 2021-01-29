@@ -125,6 +125,25 @@ public class BuildServiceImpl implements BuildService {
         return new DataResponse<>(result, collector.getLastExecuted());
     }
 
+    public DataResponse<Iterable<Build>> searchTop10ByCollectorItemIdOrderByTimestampDesc(BuildSearchRequest request) {
+        CollectorItem item;
+        Component component = componentRepository.findOne(request.getComponentId());
+        if ( (component == null)
+                || ((item = component.getLastUpdatedCollectorItemForType(CollectorType.Build)) == null) ) {
+            Iterable<Build> results = new ArrayList<>();
+            return new DataResponse<>(results, new Date().getTime());
+        }
+
+        QBuild build = new QBuild("build");
+        BooleanBuilder builder = new BooleanBuilder();
+        builder.and(build.collectorItemId.eq(item.getId()));
+        Collector collector = collectorRepository.findOne(item.getCollectorId());
+
+        ObjectId collectorItemId = new ObjectId(String.valueOf(item.getId()));
+        Iterable<Build> result = buildRepository.findTop10ByCollectorItemIdOrderByTimestampDesc(collectorItemId);;
+        return new DataResponse<>(result, collector.getLastExecuted());
+    }
+
     protected Build createBuild(BuildDataCreateRequest request) throws HygieiaException {
         /**
          * Step 1: create Collector if not there
