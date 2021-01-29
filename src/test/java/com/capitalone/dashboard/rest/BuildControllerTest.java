@@ -3,15 +3,12 @@ package com.capitalone.dashboard.rest;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.util.*;
 
 import org.bson.types.ObjectId;
 import org.junit.Before;
@@ -38,6 +35,10 @@ import com.capitalone.dashboard.request.BuildDataCreateRequest;
 import com.capitalone.dashboard.request.BuildSearchRequest;
 import com.capitalone.dashboard.service.BuildService;
 import com.capitalone.dashboard.util.TestUtil;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.ArrayList;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {TestConfig.class, WebMVCConfig.class})
@@ -130,7 +131,7 @@ public class BuildControllerTest {
 
         build2.setTimestamp(2);
 
-        Collection<Build> listOfBuilds = new LinkedList<>();
+        Collection<Build> listOfBuilds = new ArrayList<>();
         listOfBuilds.add(build2);
         listOfBuilds.add(build);
         Iterable<Build> iterableBuilds = listOfBuilds;
